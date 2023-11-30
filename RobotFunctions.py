@@ -3,6 +3,7 @@ import numpy as np
 import requests
 import roboticstoolbox as rtb
 import spatialmath as sm
+import time
 
 
 esp32_ip = "192.168.4.1"                    # ESP32 IP address
@@ -16,6 +17,13 @@ def control_relay(action):
         print(f"Relay turned {action.upper()}")
     else:
         print(f"Failed to turn {action.upper()} relay")
+
+
+def relay_task(action):
+    time.sleep(1)
+    control_relay("on")
+    time.sleep(1)
+    control_relay("off")
 
 
 def LRMate200iD4S_gen():  # Define the LRMate200iD4S robot using roboticstoolbox
@@ -37,9 +45,6 @@ def LRMate200iD4S_gen():  # Define the LRMate200iD4S robot using roboticstoolbox
     # robot.base = sm.SE3(0, 0, -0.3)
     # print(robot)
     return robot
-
-
-lrmate = LRMate200iD4S_gen()
 
 
 def joints_fanuc2corke(q):
@@ -157,6 +162,14 @@ def move_robot_with_joint_positions(robot, joint_positions_list):
 
     except Exception as e:
         print(f"Failed to move: {str(e)}")
+
+
+def move_robot(robot, joint_positions, mode, velocity):
+    try:
+        robot.move(mode, vals=joint_positions, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+        print("Robot moved successfully.")
+    except Exception as e:
+        print(f"Failed to move the robot: {str(e)}")
 
 
 def move_robot_joint(robot, joint_index, degrees, velocity=5):
