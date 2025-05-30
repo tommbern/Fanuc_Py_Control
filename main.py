@@ -2,26 +2,25 @@ from fanucpy import Robot
 import sys
 import RobotFunctions as Rf
 import threading
-
+#diegos
 lrmate = Rf.LRMate200iD4S_gen()
 
 print(lrmate)
 robot = Robot(robot_model="Fanuc", host="192.168.1.10", port=18735, ee_DO_type="RDO", ee_DO_num=7)
 robot.connect()         # ci si connette al robot
-robot.gripper(False)    # gripper chiuso
+# robot.gripper(False)    # gripper chiuso
 
 current_joint_positions = robot.get_curjpos()                       # si legge la posizione dei joint
 print("Current Joint Positions:", current_joint_positions)
 current_cartesian_positions = robot.get_curpos()                    # si legge la posizione cartesiana (non conosciamo la base)
 print("Current Cartesian Positions:", current_cartesian_positions)
-
+#
 # PER TEST MANUALI
-# joint_positions = new_joint_positions # DA LANCIARE MANUALMENTE PER TESTARE ROBOT.MOVE()
-# joint_positions = [0, 0, -20, 0, 30, 0]
-# # joint_positions = [75.621, 111.708, 554.819, -167.993, -0.742, -90.583]
-# cart_positions = [370, 0, 200, -180, 45, 0]
-# robot.move("joint", vals=joint_positions, velocity=50, acceleration=100, cnt_val=0, linear=True)
-# robot.move("pose", vals=cart_positions, velocity=200, acceleration=100, cnt_val=100, linear=True)
+# #  joint_positions = [75.621, 111.708, 554.819, -167.993, -0.742, -90.583]
+cart_positions = [350, 100, 200, 90.01, -90.01, 90.01]
+# robot.move("joint", vals=joint_positions, velocity=20, acceleration=100, cnt_val=0, linear=True)
+robot.move("pose", vals=cart_positions, velocity=20, acceleration=75, cnt_val=100, linear=True)
+# # # # robot.disconnect()
 
 while True:
     try:
@@ -29,6 +28,22 @@ while True:
             user_input = input("Enter 'on', 'off', 'move1', 'move2', 'move3' or 'q' to quit: ")
             if user_input.lower() == "on" or user_input.lower() == "off":
                 Rf.control_relay(user_input.lower())
+
+            elif user_input.lower() == "gaia":
+                cart_positions = [444, 120, 175, 90.01, -90.01, 90.01]
+                mode = "pose"
+                velocity = 20
+
+                robot.move("pose", vals=cart_positions, velocity=20, acceleration=100, cnt_val=100, linear=True)
+
+                relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
+                move_thread = threading.Thread(target=Rf.move_gaia, args=(robot, cart_positions, mode, velocity))
+
+                relay_thread.start()
+                move_thread.start()
+
+                relay_thread.join()
+                move_thread.join()
 
             elif user_input.lower() == "go":
                 joint_positions = [0, 0, 0, 0, -45, 0]
@@ -46,12 +61,31 @@ while True:
 
             elif user_input.lower() == "go1":
                 # joint_positions = [0, 7.9, -15.5, 0, -29.5, 0]
-                cart_positions = [350, 50, -10, 180, 0, 0]
+                cart_positions = [450, 150, -100, 180, 0, 0]
+
                 mode = "pose"
-                velocity = 10
+                velocity = 20
 
                 relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
                 move_thread = threading.Thread(target=Rf.move_robot, args=(robot, cart_positions, mode, velocity))
+
+                relay_thread.start()
+                move_thread.start()
+
+                relay_thread.join()
+                move_thread.join()
+
+            elif user_input.lower() == "fd": #test for focal distance
+                # joint_positions = [0, 7.9, -15.5, 0, -29.5, 0]
+                start_position = [455, 100, 182, 90.01, -90.01, 90.01]
+                end_position = [435, 100, 182, 90.01, -90.01, 90.01]
+
+                mode = "pose"
+                velocity = 20
+                robot.move("pose", vals=start_position, velocity=20, acceleration=100, cnt_val=100, linear=True)
+
+                relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
+                move_thread = threading.Thread(target=Rf.move_fd, args=(robot, start_position, end_position, mode, velocity))
 
                 relay_thread.start()
                 move_thread.start()
@@ -73,6 +107,293 @@ while True:
 
                 relay_thread.join()
                 move_thread.join()
+
+            elif user_input.lower() == "cycle":
+                # joint_positions = [0, 7.9, -15.5, 0, -29.5, 0]
+                # cart_positions = [450, 150, -100, 180, 0, 0]
+
+                mode = "pose"
+                velocity = 100
+
+                relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
+                move_thread = threading.Thread(target=Rf.move_robot_cycle, args=(robot, mode, velocity))
+
+                relay_thread.start()
+                move_thread.start()
+
+                Rf.control_relay("off")
+                relay_thread.join()
+                move_thread.join()
+
+            elif user_input.lower() == "timer":
+
+                Rf.control_relay("on")
+                Rf.time.sleep(180)
+                Rf.control_relay("off")
+
+            elif user_input.lower() == "test1":
+                mode = "pose"
+                velocity = 50
+
+                position1 = [410, -50, 150, -90, 0, -90]
+                position2 = [410, -50, 100, -90, 0, -90]
+
+                position3 = [410, 0, 150, -90, 0, -90]
+                position4 = [410, 0, 100, -90, 0, -90]
+
+                position5 = [410, 50, 150, -90, 0, -90]
+                position6 = [410, 50, 100, -90, 0, -90]
+
+                relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
+                move_thread = threading.Thread(target=Rf.move_between_positions, args=(robot, mode, velocity, position1, position2, position3, position4, position5, position6))
+
+                relay_thread.start()
+                move_thread.start()
+
+                relay_thread.join()
+                # Rf.control_relay("off")
+                move_thread.join()
+
+            elif user_input.lower() == "test2": #verticale, setting:X-axis
+                mode = "pose"
+                velocity = 10
+                iteration = 1
+
+                position1 = [353, 35, 210, 90.01, -90.01, 90.01]
+                position2 = [353, 35, 160, 90.01, -90.01, 90.01]
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+
+                relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
+                move_thread = threading.Thread(target=Rf.move_test2, args=(robot, mode, velocity, iteration, position1, position2))
+
+                relay_thread.start()
+                move_thread.start()
+                relay_thread.join()
+                move_thread.join()
+
+            elif user_input.lower() == "test22": #orizzontale, setting:Y-axis
+                mode = "pose"
+                velocity = 20
+                iteration = 10
+
+                position1 = [345, -100, -40, 179.99, -89, 0.01]
+                position2 = [345, -190, -40, 179.99, -89, 0.01]
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+
+                relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
+                move_thread = threading.Thread(target=Rf.move_test2, args=(robot, mode, velocity, iteration, position1, position2))
+
+                relay_thread.start()
+                move_thread.start()
+                relay_thread.join()
+                move_thread.join()
+
+            elif user_input.lower() == "test3": #orizzontale, setting:Y-axis
+                mode = "pose"
+                velocity = 10
+                iteration = 1
+
+                position1 = [380, 30, 185, 179.99, -85, 0.01]
+                position2 = [380, 120, 185, 179.99, -85, 0.01]
+
+                position3 = [380, 30, 155, 179.99, -85, 0.01]
+                position4 = [380, 120, 155, 179.99, -85, 0.01]
+
+                position5 = [380, 30, 125, 179.99, -85, 0.01]
+                position6 = [380, 120, 125, 179.99, -85, 0.01]
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+
+                relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
+                move_thread = threading.Thread(target=Rf.move_test3, args=(robot, mode, velocity, iteration, position1, position2, position3, position4, position5, position6))
+
+                relay_thread.start()
+                move_thread.start()
+                relay_thread.join()
+                move_thread.join()
+
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+            elif user_input.lower() == "test33": #verticale, setting:X-axis
+                mode = "pose"
+                velocity = 10
+                iteration = 1
+
+                position1 = [477, 60, 200, 179.99, -85, 0.01]
+                position2 = [477, 60, 110, 179.99, -85, 0.01]
+
+                position3 = [477, 30, 200, 179.99, -85, 0.01]
+                position4 = [477, 30, 110, 179.99, -85, 0.01]
+
+                position5 = [477, 0, 200, 179.99, -85, 0.01]
+                position6 = [477, 0, 110, 179.99, -85, 0.01]
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+
+                relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
+                move_thread = threading.Thread(target=Rf.move_test33, args=(robot, mode, velocity, iteration, position1, position2, position3, position4, position5, position6))
+
+                relay_thread.start()
+                move_thread.start()
+                relay_thread.join()
+                move_thread.join()
+
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+
+            elif user_input.lower() == "test34": #verticale, setting:X-axis
+                mode = "pose"
+                velocity = 20
+                iteration = 2
+
+                position1 = [470, 60, 100, 179.99, -85, 0.01]
+                position2 = [470, 60, 10, 179.99, -85, 0.01]
+
+                position3 = [470, 30, 100, 179.99, -85, 0.01]
+                position4 = [470, 30, 10, 179.99, -85, 0.01]
+
+                position5 = [470, 0, 100, 179.99, -85, 0.01]
+                position6 = [470, 0, 10, 179.99, -85, 0.01]
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+
+                relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
+                move_thread = threading.Thread(target=Rf.move_test34, args=(robot, mode, velocity, iteration, position1, position2, position3, position4, position5, position6))
+
+                relay_thread.start()
+                move_thread.start()
+                relay_thread.join()
+                move_thread.join()
+
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+
+            elif user_input.lower() == "test35": #orizzontale, setting:Y-axis
+                mode = "pose"
+                velocity = 20
+                iteration = 2
+
+                position1 = [470, 75, 85, 179.99, -85, 0.01]
+                position2 = [470, -15, 85, 179.99, -85, 0.01]
+
+                position3 = [470, 75, 55, 179.99, -85, 0.01]
+                position4 = [470, -15, 55, 179.99, -85, 0.01]
+
+                position5 = [470, 75, 25, 179.99, -85, 0.01]
+                position6 = [470, -15, 25, 179.99, -85, 0.01]
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+
+                relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
+                move_thread = threading.Thread(target=Rf.move_test34, args=(robot, mode, velocity, iteration, position1, position2, position3, position4, position5, position6))
+
+                relay_thread.start()
+                move_thread.start()
+                relay_thread.join()
+                move_thread.join()
+
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+
+            elif user_input.lower() == "test6":
+                mode = "pose"
+                velocity = 20
+                iteration = 5
+
+                position1 = [380, 15, 185, 179.99, -85, 0.01]
+                position2 = [380, -165, 185, 179.99, -85, 0.01]
+
+                position3 = [380, 15, 155, 179.99, -85, 0.01]
+                position4 = [380, -165, 155, 179.99, -85, 0.01]
+
+                position5 = [380, 15, 125, 179.99, -85, 0.01]
+                position6 = [380, -165, 125, 179.99, -85, 0.01]
+
+                position7 = [380, 15, 95, 179.99, -85, 0.01]
+                position8 = [380, -165, 95, 179.99, -85, 0.01]
+
+                position9 = [380, 15, 65, 179.99, -85, 0.01]
+                position10 = [380, -165, 65, 179.99, -85, 0.01]
+
+                position11 = [380, 15, 35, 179.99, -85, 0.01]
+                position12 = [380, -165, 35, 179.99, -85, 0.01]
+
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+
+                relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
+                move_thread = threading.Thread(target=Rf.move_test6, args=(robot, mode, velocity, iteration, position1, position2, position3, position4, position5, position6, position7, position8, position9, position10, position11, position12))
+
+                relay_thread.start()
+                move_thread.start()
+                relay_thread.join()
+                move_thread.join()
+
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+
+            elif user_input.lower() == "test4":
+                mode = "pose"
+                velocity = 20
+
+                position1 = [380, 135, 200, 179.9, -85, 0]
+                position2 = [380, 105, 200, 179.9, -85, 0]
+                position3 = [380, 75, 200, 179.9, -85, 0]
+                position4 = [380, 45, 200, 179.9, -85, 0]
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+
+                relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
+                move_thread = threading.Thread(target=Rf.move_test4, args=(robot, mode, velocity, position1, position2, position3, position4))
+
+                relay_thread.start()
+                move_thread.start()
+                relay_thread.join()
+                move_thread.join()
+
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+
+            elif user_input.lower() == "test5":
+                mode = "pose"
+                velocity = 20
+
+                position1 = [380, 150, 10, 179.9, -85, 0]
+                position2 = [380, 120, 50, 179.9, -85, 0]
+                position3 = [380, 90, 50, 179.9, -85, 0]
+                position4 = [380, 60, 50, 179.9, -85, 0]
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+
+                relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
+                move_thread = threading.Thread(target=Rf.move_test5, args=(robot, mode, velocity, position1, position2, position3, position4))
+
+                relay_thread.start()
+                move_thread.start()
+                relay_thread.join()
+                move_thread.join()
+
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+
+            elif user_input.lower() == "test10": #verticale, setting:X-axis
+                mode = "pose"
+                velocity = 10
+                iteration = 3
+
+                position1 = [370, 40, 100, 90.01, -90.01, 90.01]
+                position2 = [370, 40, 200, 90.01, -90.01, 90.01]
+                position3 = [370, 40, 190, 90.01, -90.01, 90.01]
+                position4 = [370, 40, 180, 90.01, -90.01, 90.01]
+                position5 = [370, 40, 170, 90.01, -90.01, 90.01]
+                position6 = [370, 40, 160, 90.01, -90.01, 90.01]
+                position7 = [370, 40, 150, 90.01, -90.01, 90.01]
+                position8 = [370, 40, 140, 90.01, -90.01, 90.01]
+                position9 = [370, 40, 130, 90.01, -90.01, 90.01]
+                position10 = [370, 40, 120, 90.01, -90.01, 90.01]
+                position11 = [370, 40, 110, 90.01, -90.01, 90.01]
+                # position1 = [350, 30, 230, 179.99, -89, 0.01]
+                # position2 = [350, 30, -170, 179.99, -89, 0.01]
+                robot.move("pose", vals=position1, velocity=50, acceleration=100, cnt_val=100, linear=True)
+
+                relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
+                move_thread = threading.Thread(target=Rf.move_test10, args=(robot, mode, velocity, iteration, position1,
+                                                                            position2, position3, position4, position5,
+                                                                            position6, position7, position8, position9,
+                                                                            position10, position11))
+
+                relay_thread.start()
+                move_thread.start()
+                relay_thread.join()
+                move_thread.join()
+
+
 
             elif user_input.lower() == "move1":
                 Rf.move_robot_joint(robot, 5, 10.0)
@@ -104,6 +425,7 @@ while True:
                 Rf.control_relay("off")
 
             elif user_input.lower() == "q":
+                Rf.control_relay("off")
                 robot.disconnect()
                 sys.exit()
             else:

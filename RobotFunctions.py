@@ -20,10 +20,10 @@ def control_relay(action):
 
 
 def relay_task(action):
-    time.sleep(1)
+    time.sleep(0.01)
     control_relay("on")
     time.sleep(1)
-    control_relay("off")
+    # control_relay("off")
 
 
 def LRMate200iD4S_gen():  # Define the LRMate200iD4S robot using roboticstoolbox
@@ -172,6 +172,277 @@ def move_robot(robot, joint_positions, mode, velocity):
         print(f"Failed to move the robot: {str(e)}")
 
 
+def move_between_positions(robot, mode, velocity, position1, position2, position3, position4, position5, position6):
+    for _ in range(5):
+        robot.move(mode, vals=position1, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+        robot.move(mode, vals=position2, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+    for _ in range(5):
+        robot.move(mode, vals=position3, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+        robot.move(mode, vals=position4, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+    for _ in range(5):
+        robot.move(mode, vals=position5, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+        robot.move(mode, vals=position6, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+    control_relay("off")
+
+
+def move_fd(robot, start_position, end_position, mode, velocity):
+    try:
+        control_relay("on")
+        robot.move(mode, vals=end_position, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+        print("Robot moved successfully.")
+    except Exception as e:
+        print(f"Failed to move the robot: {str(e)}")
+    control_relay("off")
+    robot.move(mode, vals=start_position, velocity=50, acceleration=100, cnt_val=0, linear=True)
+
+
+def move_test2(robot, mode, velocity, iteration, position1, position2):
+    max_iteration = iteration
+    for i in range(max_iteration):
+        robot.move(mode, vals=position2, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position1, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        print(f"Iteration {i + 1} out of {max_iteration}")
+
+    control_relay("off")
+    robot.move(mode, vals=position1, velocity=50, acceleration=100, cnt_val=0, linear=True)
+
+
+def move_test3(robot, mode, velocity, iteration, position1, position2, position3, position4, position5, position6):
+    test3_iterations = iteration
+    velocity = velocity
+    for i in range(test3_iterations):
+                    # control_relay("on")
+        robot.move(mode, vals=position1, velocity=100, acceleration=100, cnt_val=0, linear=True)
+        control_relay("on")
+        robot.move(mode, vals=position2, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        control_relay("off")
+        robot.move(mode, vals=position4, velocity=100, acceleration=100, cnt_val=0, linear=True)
+        control_relay("on")
+        robot.move(mode, vals=position3, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        control_relay("off")
+        robot.move(mode, vals=position5, velocity=100, acceleration=100, cnt_val=0, linear=True)
+        control_relay("on")
+        robot.move(mode, vals=position6, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        control_relay("off")
+        print(f"Iteration {i + 1} out of {test3_iterations}")
+
+
+def move_test33(robot, mode, velocity, iteration, position1, position2, position3, position4, position5, position6):
+    test33_iterations = iteration
+    velocity = velocity
+    for i in range(test33_iterations):
+        # control_relay("on")
+        robot.move(mode, vals=position1, velocity=100, acceleration=100, cnt_val=0, linear=True)
+        control_relay("on")
+        robot.move(mode, vals=position2, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        control_relay("off")
+        robot.move(mode, vals=position4, velocity=100, acceleration=100, cnt_val=0, linear=True)
+        control_relay("on")
+        robot.move(mode, vals=position3, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        control_relay("off")
+        robot.move(mode, vals=position5, velocity=100, acceleration=100, cnt_val=0, linear=True)
+        control_relay("on")
+        robot.move(mode, vals=position6, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        control_relay("off")
+        print(f"Iteration {i + 1} out of {test33_iterations}")
+
+
+def move_test34(robot, mode, velocity, iteration, position1, position2, position3, position4, position5, position6):
+    test34_iterations = iteration
+    velocity = velocity
+    for i in range(test34_iterations):
+        # control_relay("on")
+        robot.move(mode, vals=position1, velocity=100, acceleration=100, cnt_val=0, linear=True)
+        control_relay("on")
+        robot.move(mode, vals=position2, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position1, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        control_relay("off")
+        robot.move(mode, vals=position3, velocity=100, acceleration=100, cnt_val=0, linear=True)
+        control_relay("on")
+        robot.move(mode, vals=position4, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position3, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        control_relay("off")
+        robot.move(mode, vals=position5, velocity=100, acceleration=100, cnt_val=0, linear=True)
+        control_relay("on")
+        robot.move(mode, vals=position6, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position5, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        control_relay("off")
+        print(f"Iteration {i + 1} out of {test34_iterations}")
+
+
+def move_test6(robot, mode, velocity, iteration, position1, position2, position3, position4, position5,
+                position6, position7, position8, position9, position10, position11, position12):
+    test6_iterations = iteration
+    velocity = velocity
+    for i in range(test6_iterations):
+        # control_relay("on")
+        robot.move(mode, vals=position1, velocity=100, acceleration=100, cnt_val=0, linear=True)
+        control_relay("on")
+        robot.move(mode, vals=position2, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        control_relay("off")
+        robot.move(mode, vals=position4, velocity=100, acceleration=100, cnt_val=0, linear=True)
+        control_relay("on")
+        robot.move(mode, vals=position3, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        control_relay("off")
+        robot.move(mode, vals=position5, velocity=100, acceleration=100, cnt_val=0, linear=True)
+        control_relay("on")
+        robot.move(mode, vals=position6, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        control_relay("off")
+        robot.move(mode, vals=position8, velocity=100, acceleration=100, cnt_val=0, linear=True)
+        control_relay("on")
+        robot.move(mode, vals=position7, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        control_relay("off")
+        robot.move(mode, vals=position9, velocity=100, acceleration=100, cnt_val=0, linear=True)
+        control_relay("on")
+        robot.move(mode, vals=position10, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        control_relay("off")
+        robot.move(mode, vals=position12, velocity=100, acceleration=100, cnt_val=0, linear=True)
+        control_relay("on")
+        robot.move(mode, vals=position11, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        control_relay("off")
+        print(f"Iteration {i + 1} out of {test6_iterations}")
+
+
+def move_test4(robot, mode, velocity, position1, position2, position3, position4):
+    test3_iterations = 1
+    for i in range(test3_iterations):
+        # control_relay("on")
+        robot.move(mode, vals=position1, velocity=100, acceleration=50, cnt_val=0, linear=True)
+        control_relay("on")
+        time.sleep(5)
+        control_relay("off")
+        robot.move(mode, vals=position2, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+        control_relay("on")
+        time.sleep(5)
+        control_relay("off")
+        robot.move(mode, vals=position3, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+        control_relay("on")
+        time.sleep(5)
+        control_relay("off")
+        robot.move(mode, vals=position4, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+        control_relay("on")
+        time.sleep(5)
+        control_relay("off")
+        print(f"Iteration {i + 1} out of {test3_iterations}")
+
+
+def move_test5(robot, mode, velocity, position1, position2, position3, position4):
+    max_iteration = 5
+
+    robot.move(mode, vals=position1, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+    control_relay("on")
+    for i in range(max_iteration):
+        robot.move(mode, vals=position2, velocity=10, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position1, velocity=10, acceleration=100, cnt_val=0, linear=True)
+        print(f"Iteration {i + 1} out of {max_iteration}")
+    control_relay("off")
+    robot.move(mode, vals=position1, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+    control_relay("on")
+    for i in range(max_iteration):
+        robot.move(mode, vals=position2, velocity=50, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position1, velocity=50, acceleration=100, cnt_val=0, linear=True)
+        print(f"Iteration {i + 1} out of {max_iteration}")
+    control_relay("off")
+
+    robot.move(mode, vals=position2, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+    control_relay("on")
+    for i in range(max_iteration):
+        robot.move(mode, vals=position3, velocity=50, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position2, velocity=50, acceleration=100, cnt_val=0, linear=True)
+        print(f"Iteration {i + 1} out of {max_iteration}")
+    control_relay("off")
+    robot.move(mode, vals=position2, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+    control_relay("on")
+    for i in range(max_iteration):
+        robot.move(mode, vals=position3, velocity=10, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position2, velocity=10, acceleration=100, cnt_val=0, linear=True)
+        print(f"Iteration {i + 1} out of {max_iteration}")
+    control_relay("off")
+
+    # robot.move(mode, vals=position2, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+    # control_relay("on")
+    # for i in range(max_iteration):
+    #     robot.move(mode, vals=position3, velocity=50, acceleration=100, cnt_val=0, linear=True)
+    #     robot.move(mode, vals=position2, velocity=10, acceleration=100, cnt_val=0, linear=True)
+    #     print(f"Iteration {i + 1} out of {max_iteration}")
+    # control_relay("off")
+    #
+    # robot.move(mode, vals=position3, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+    # control_relay("on")
+    # for i in range(max_iteration):
+    #     robot.move(mode, vals=position4, velocity=50, acceleration=100, cnt_val=0, linear=True)
+    #     robot.move(mode, vals=position3, velocity=10, acceleration=100, cnt_val=0, linear=True)
+    #     print(f"Iteration {i + 1} out of {max_iteration}")
+    # control_relay("off")
+
+    robot.move(mode, vals=position1, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+
+
+def move_test10(robot, mode, velocity, iteration, position1, position2, position3, position4, position5, position6,
+                position7, position8, position9, position10, position11):
+    max_iteration = iteration
+    for i in range(max_iteration):
+        robot.move(mode, vals=position2, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position1, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+
+        robot.move(mode, vals=position3, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position1, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+
+        robot.move(mode, vals=position4, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position1, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+
+        robot.move(mode, vals=position5, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position1, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+
+        robot.move(mode, vals=position6, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position1, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+
+        robot.move(mode, vals=position7, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position1, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+
+        robot.move(mode, vals=position8, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position1, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+
+        robot.move(mode, vals=position9, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position1, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+
+        robot.move(mode, vals=position10, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position1, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+
+        robot.move(mode, vals=position11,  velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        robot.move(mode, vals=position1, velocity=velocity, acceleration=100, cnt_val=0, linear=True)
+        print(f"Iteration {i + 1} out of {max_iteration}")
+
+    control_relay("off")
+    robot.move(mode, vals=position1, velocity=50, acceleration=100, cnt_val=0, linear=True)
+
+
+def move_robot_cycle(robot, mode, velocity):
+    try:
+
+        for _ in range(2):
+            cart_positions = [[350, 150, -100, 180, 0, 0],
+                              [350, -150, -100, 180, 0, 0],
+                              [450, -150, -100, 180, 0, 0],
+                              [450, 150, -100, 180, 0, 0]]
+
+            for position in cart_positions:
+                robot.move(mode, vals=position, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+
+        # cart_positions = [350, 150, -100, 180, 0, 0]
+        # robot.move(mode, vals=cart_positions, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+        # cart_positions = [350, -150, -100, 180, 0, 0]
+        # robot.move(mode, vals=cart_positions, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+        # cart_positions = [450, -150, -100, 180, 0, 0]
+        # robot.move(mode, vals=cart_positions, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+        # cart_positions = [450, 150, -100, 180, 0, 0]
+        # robot.move(mode, vals=cart_positions, velocity=velocity, acceleration=50, cnt_val=0, linear=True)
+
+        print("Robot moved successfully.")
+    except Exception as e:
+        print(f"Failed to move the robot: {str(e)}")
+
+
 def move_robot_joint(robot, joint_index, degrees, velocity=5):
     try:
         current_joint_positions = robot.get_curjpos()
@@ -188,3 +459,14 @@ def move_robot_joint(robot, joint_index, degrees, velocity=5):
         print(f"Moved joint {joint_index + 1} by {degrees} degrees.")
     except Exception as e:
         print(f"Failed to move joint {joint_index + 1}: {str(e)}")
+
+
+def move_gaia(robot, cart_positions, mode, velocity):
+    try:
+        robot.move(mode, vals=cart_positions, velocity=50, acceleration=100, cnt_val=0, linear=True)
+        control_relay("on")
+        time.sleep(9)
+        print("Robot moved successfully.")
+    except Exception as e:
+        print(f"Failed to move the robot: {str(e)}")
+    control_relay("off")
