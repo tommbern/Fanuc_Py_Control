@@ -1,3 +1,6 @@
+Interpreter:
+- python 3.11
+
 install packages:
 - fanucpy version: 0.1.4
 - numpy version: 1.26.1

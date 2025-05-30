@@ -17,7 +17,7 @@ print("Current Cartesian Positions:", current_cartesian_positions)
 #
 # PER TEST MANUALI
 # # #  joint_positions = [75.621, 111.708, 554.819, -167.993, -0.742, -90.583]
-# cart_positions = [350, 100, 200, 90.01, -90.01, 90.01]
+# cart_positions = [350, 120, 200, 90.01, -90.01, 90.01]
 # # robot.move("joint", vals=joint_positions, velocity=20, acceleration=100, cnt_val=0, linear=True)
 # robot.move("pose", vals=cart_positions, velocity=20, acceleration=75, cnt_val=100, linear=True)
 # # # # robot.disconnect()
@@ -61,18 +61,18 @@ while True:
 
             elif user_input.lower() == "go1":
                 # joint_positions = [0, 7.9, -15.5, 0, -29.5, 0]
-                cart_positions = [450, 150, -100, 180, 0, 0]
+                cart_positions = [350, 80, 200, 90.01, -90.01, 90.01]
 
                 mode = "pose"
                 velocity = 20
 
-                relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
+                # relay_thread = threading.Thread(target=Rf.relay_task, args=(user_input.lower(),))
                 move_thread = threading.Thread(target=Rf.move_robot, args=(robot, cart_positions, mode, velocity))
 
-                relay_thread.start()
+                # relay_thread.start()
                 move_thread.start()
 
-                relay_thread.join()
+                # relay_thread.join()
                 move_thread.join()
 
             elif user_input.lower() == "fd": #test for focal distance
