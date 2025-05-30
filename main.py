@@ -16,10 +16,10 @@ current_cartesian_positions = robot.get_curpos()                    # si legge l
 print("Current Cartesian Positions:", current_cartesian_positions)
 #
 # PER TEST MANUALI
-# #  joint_positions = [75.621, 111.708, 554.819, -167.993, -0.742, -90.583]
-cart_positions = [350, 100, 200, 90.01, -90.01, 90.01]
-# robot.move("joint", vals=joint_positions, velocity=20, acceleration=100, cnt_val=0, linear=True)
-robot.move("pose", vals=cart_positions, velocity=20, acceleration=75, cnt_val=100, linear=True)
+# # #  joint_positions = [75.621, 111.708, 554.819, -167.993, -0.742, -90.583]
+# cart_positions = [350, 100, 200, 90.01, -90.01, 90.01]
+# # robot.move("joint", vals=joint_positions, velocity=20, acceleration=100, cnt_val=0, linear=True)
+# robot.move("pose", vals=cart_positions, velocity=20, acceleration=75, cnt_val=100, linear=True)
 # # # # robot.disconnect()
 
 while True:
