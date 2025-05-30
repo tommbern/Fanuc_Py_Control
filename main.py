@@ -2,7 +2,7 @@ from fanucpy import Robot
 import sys
 import RobotFunctions as Rf
 import threading
-#diegos
+
 lrmate = Rf.LRMate200iD4S_gen()
 
 print(lrmate)
